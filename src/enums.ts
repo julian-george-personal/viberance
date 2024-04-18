@@ -13,7 +13,7 @@ export const noteList = [
   "B",
 ];
 
-export const keyHues = {
+export const keyHues: { [key: string]: number } = {
   F: 30,
   C: 60,
   G: 90,

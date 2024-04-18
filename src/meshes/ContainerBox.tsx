@@ -1,8 +1,8 @@
-const ContainerBox = (props: any) => {
+const ContainerBox = ({ scale }: any) => {
   return (
-    <mesh {...props}>
-      <boxGeometry args={[20, 20, 20]} />
-      <meshStandardMaterial color={"black"} side={1} />
+    <mesh>
+      <boxGeometry args={[scale, scale, scale]} />
+      <meshPhongMaterial color={"#111"} side={1} />
     </mesh>
   );
 };

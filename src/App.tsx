@@ -2,27 +2,42 @@ import { Canvas } from "@react-three/fiber";
 import "./App.css";
 import ContainerBox from "./meshes/ContainerBox";
 import { useMIDIInputs, useMIDINotes } from "@react-midi/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LightOrb from "./meshes/LightOrb";
 import { midiToNote } from "./utils";
+import { keyHues } from "./enums";
+import { useSpring, animated } from "@react-spring/three";
+
+const SCENE_SCALE = 150;
 
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
+  const [currentBass, setCurrentBass] = useState<string | null>(null);
+  const [currentColor, setCurrentColor] = useState<string>("white");
+  const animatedColor = useSpring({ to: { color: currentColor } });
   useEffect(() => {
     const activeNotes = activeMIDI.map((note) => note.note);
     activeNotes.sort();
-    console.log(activeNotes.map((noteNum) => midiToNote(noteNum)));
+    setCurrentBass(midiToNote(activeNotes[0])[0]);
   }, [activeMIDI]);
+  useEffect(() => {
+    if (currentBass != null)
+      setCurrentColor(`hsl(${keyHues[currentBass]}, 100%, 60%)`);
+  }, [currentBass]);
   return (
-    <Canvas>
-      <pointLight
-        position={[1, 1, 3]}
+    <Canvas camera={{ position: [SCENE_SCALE, 0, 0] }}>
+      <animated.pointLight
+        position={[SCENE_SCALE * 0.9, SCENE_SCALE * 0.3, SCENE_SCALE * -0.3]}
         decay={0}
         intensity={Math.PI}
-        color="white"
+        color={animatedColor.color || "white"}
       />
-      <LightOrb position={[0, 0, 1]} color="blue" />
-      <ContainerBox />
+      <LightOrb
+        position={[0, 0, 0]}
+        color={animatedColor.color || "white"}
+        radius={SCENE_SCALE * 0.25}
+      />
+      <ContainerBox scale={SCENE_SCALE * 2} />
     </Canvas>
   );
 };

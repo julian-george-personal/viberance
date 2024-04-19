@@ -8,10 +8,11 @@ import { getIntervalName, intervalsToColor, midiToNote } from "./utils";
 import { intervalDistances, keyHues } from "./enums";
 import { useSpring, animated } from "@react-spring/three";
 import { MIDINote } from "@react-midi/hooks/dist/types";
+// import { Stats, OrbitControls } from "@react-three/drei";
 
 const SCENE_SCALE = 150;
 // how long it takes for notes to go away in ms
-const MAX_NOTE_TIMEOUT = 750;
+const MAX_NOTE_TIMEOUT = 75;
 
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
@@ -19,7 +20,7 @@ const App = () => {
   const [currentIntervals, setCurrentIntervals] = useState<string[]>([]);
   const [currentNotes, setCurrentNotes] = useState<[MIDINote, number][]>([]);
   const [currentColor, setCurrentColor] = useState<string>("white");
-  const animatedColor = useSpring({ to: { color: currentColor } });
+  // const animatedColor = useSpring({ color: "white" });
   useEffect(() => {
     const decayInterval = setInterval(() => {
       const midiSet = new Set(activeMIDI.map((note) => note.note));
@@ -67,18 +68,18 @@ const App = () => {
 
   return (
     <Canvas camera={{ position: [SCENE_SCALE, 0, 0] }}>
-      <animated.pointLight
-        position={[SCENE_SCALE * 0.9, SCENE_SCALE * 0.3, SCENE_SCALE * -0.3]}
-        decay={0}
-        intensity={2}
-        color={"white"}
-      />
+      <animated.ambientLight intensity={2} color={"white"} />
       <LightOrb
         position={[0, 0, 0]}
-        color={animatedColor.color || "white"}
+        color={currentColor}
         radius={SCENE_SCALE * 0.25}
       />
-      {/* <ContainerBox scale={SCENE_SCALE * 2} /> */}
+      {/* <animated.pointLight
+        position={[SCENE_SCALE - 1, SCENE_SCALE - 1, SCENE_SCALE - 1]}
+        color={animatedColor.color}
+      /> */}
+      <ContainerBox scale={SCENE_SCALE * 2} />
+      {/* <OrbitControls /> */}
     </Canvas>
   );
 };

@@ -4,8 +4,8 @@ import ContainerBox from "./meshes/ContainerBox";
 import { useMIDIInputs, useMIDINotes } from "@react-midi/hooks";
 import { useEffect, useState } from "react";
 import LightOrb from "./meshes/LightOrb";
-import { midiToNote } from "./utils";
-import { keyHues } from "./enums";
+import { getIntervalName, intervalsToColor, midiToNote } from "./utils";
+import { intervalDistances, keyHues } from "./enums";
 import { useSpring, animated } from "@react-spring/three";
 
 const SCENE_SCALE = 150;
@@ -13,17 +13,32 @@ const SCENE_SCALE = 150;
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
   const [currentBass, setCurrentBass] = useState<string | null>(null);
+  const [currentIntervals, setCurrentIntervals] = useState<string[]>([]);
   const [currentColor, setCurrentColor] = useState<string>("white");
   const animatedColor = useSpring({ to: { color: currentColor } });
   useEffect(() => {
     const activeNotes = activeMIDI.map((note) => note.note);
     activeNotes.sort();
-    setCurrentBass(midiToNote(activeNotes[0])[0]);
+    const currIntervals = [];
+    let currentBass = null;
+    for (let i = 0; i < activeNotes.length; i++) {
+      const activeNote = activeNotes[i];
+      if (i == 0) currentBass = activeNote;
+      else {
+        //If it gets to this point there will always be a currentBass
+        //@ts-expect-error
+        currIntervals.push(activeNote - currentBass);
+      }
+    }
+    setCurrentBass(currentBass ? midiToNote(currentBass)[0] : null);
+    setCurrentIntervals(
+      currIntervals.map((interval) => getIntervalName(interval))
+    );
   }, [activeMIDI]);
   useEffect(() => {
     if (currentBass != null)
-      setCurrentColor(`hsl(${keyHues[currentBass]}, 100%, 60%)`);
-  }, [currentBass]);
+      setCurrentColor(intervalsToColor(currentBass, currentIntervals));
+  }, [currentBass, currentIntervals]);
   return (
     <Canvas camera={{ position: [SCENE_SCALE, 0, 0] }}>
       <animated.pointLight

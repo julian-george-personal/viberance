@@ -7,17 +7,43 @@ import LightOrb from "./meshes/LightOrb";
 import { getIntervalName, intervalsToColor, midiToNote } from "./utils";
 import { intervalDistances, keyHues } from "./enums";
 import { useSpring, animated } from "@react-spring/three";
+import { MIDINote } from "@react-midi/hooks/dist/types";
 
 const SCENE_SCALE = 150;
+// how long it takes for notes to go away in ms
+const MAX_NOTE_TIMEOUT = 750;
 
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
   const [currentBass, setCurrentBass] = useState<string | null>(null);
   const [currentIntervals, setCurrentIntervals] = useState<string[]>([]);
+  const [currentNotes, setCurrentNotes] = useState<[MIDINote, number][]>([]);
   const [currentColor, setCurrentColor] = useState<string>("white");
   const animatedColor = useSpring({ to: { color: currentColor } });
   useEffect(() => {
-    const activeNotes = activeMIDI.map((note) => note.note);
+    const decayInterval = setInterval(() => {
+      const midiSet = new Set(activeMIDI.map((note) => note.note));
+      const newCurrentNotes: [MIDINote, number][] = activeMIDI.map((note) => [
+        note,
+        0,
+      ]);
+      const currTime = new Date().getTime();
+      for (const [note, timestamp] of currentNotes) {
+        if (!midiSet.has(note.note)) {
+          if (timestamp == 0) newCurrentNotes.push([note, currTime]);
+          else if (
+            currTime - (note.velocity / 256 + 0.5) * MAX_NOTE_TIMEOUT <
+            timestamp
+          )
+            newCurrentNotes.push([note, timestamp]);
+        }
+      }
+      setCurrentNotes(newCurrentNotes);
+    }, 40);
+    return () => clearInterval(decayInterval);
+  }, [activeMIDI, currentNotes]);
+  useEffect(() => {
+    const activeNotes = currentNotes.map(([note, timestamp]) => note.note);
     activeNotes.sort();
     const currIntervals = [];
     let currentBass = null;
@@ -34,25 +60,25 @@ const App = () => {
     setCurrentIntervals(
       currIntervals.map((interval) => getIntervalName(interval))
     );
-  }, [activeMIDI]);
+  }, [currentNotes]);
   useEffect(() => {
-    if (currentBass != null)
-      setCurrentColor(intervalsToColor(currentBass, currentIntervals));
+    setCurrentColor(intervalsToColor(currentBass, currentIntervals));
   }, [currentBass, currentIntervals]);
+
   return (
     <Canvas camera={{ position: [SCENE_SCALE, 0, 0] }}>
       <animated.pointLight
         position={[SCENE_SCALE * 0.9, SCENE_SCALE * 0.3, SCENE_SCALE * -0.3]}
         decay={0}
-        intensity={Math.PI}
-        color={animatedColor.color || "white"}
+        intensity={2}
+        color={"white"}
       />
       <LightOrb
         position={[0, 0, 0]}
         color={animatedColor.color || "white"}
         radius={SCENE_SCALE * 0.25}
       />
-      <ContainerBox scale={SCENE_SCALE * 2} />
+      {/* <ContainerBox scale={SCENE_SCALE * 2} /> */}
     </Canvas>
   );
 };

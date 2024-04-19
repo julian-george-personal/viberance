@@ -24,13 +24,15 @@ export const getIntervalName = (intervalDistance: number): string => {
 const OCTAVE_DIMINISHING = 0.4;
 
 export const intervalsToColor = (
-  currentBass: string,
+  currentBass: string | null,
   intervals: string[]
 ): string => {
   const usedIntervals = new Set<string>();
+  if (!currentBass) return "white";
   let hue = keyHues[currentBass];
-  let saturation = 60;
+  let saturation = 30;
   let brightness = 60;
+
   for (const interval of intervals) {
     const colorVector = intervalToColorVector[interval];
     if (!usedIntervals.has(interval)) {
@@ -43,7 +45,7 @@ export const intervalsToColor = (
     }
     hue %= 360;
     saturation = Math.min(saturation, 100);
-    brightness = Math.min(brightness, 100);
+    brightness = Math.min(brightness, 80);
   }
-  return `hsl(${keyHues[currentBass]}, ${saturation}%, ${brightness}%)`;
+  return `hsl(${hue}, ${Math.round(saturation)}%, ${Math.round(brightness)}%)`;
 };

@@ -14,13 +14,15 @@ const SCENE_SCALE = 150;
 // how long it takes for notes to go away in ms
 const MAX_NOTE_TIMEOUT = 75;
 
+const DEFAULT_COLOR = "hsl(0,0,100%)";
+
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
   const [currentBass, setCurrentBass] = useState<string | null>(null);
   const [currentIntervals, setCurrentIntervals] = useState<string[]>([]);
   const [currentNotes, setCurrentNotes] = useState<[MIDINote, number][]>([]);
-  const [currentColor, setCurrentColor] = useState<string>("white");
-  // const animatedColor = useSpring({ color: "white" });
+  const [currentColor, setCurrentColor] = useState<string>(DEFAULT_COLOR);
+  const animatedColor = useSpring({ color: DEFAULT_COLOR });
   useEffect(() => {
     const decayInterval = setInterval(() => {
       const midiSet = new Set(activeMIDI.map((note) => note.note));

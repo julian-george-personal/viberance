@@ -3,16 +3,16 @@ import "./App.css";
 import ContainerBox from "./meshes/ContainerBox";
 import { useMIDIInputs, useMIDINotes } from "@react-midi/hooks";
 import { useEffect, useState } from "react";
+import { Color } from "three";
 import LightOrb from "./meshes/LightOrb";
 import { getIntervalName, intervalsToColor, midiToNote } from "./utils";
 import { intervalDistances, keyHues } from "./enums";
 import { useSpring, animated } from "@react-spring/three";
 import { MIDINote } from "@react-midi/hooks/dist/types";
-import { Stats, OrbitControls } from "@react-three/drei";
 
 const SCENE_SCALE = 150;
 // how long it takes for notes to go away in ms
-const MAX_NOTE_TIMEOUT = 75;
+const MAX_NOTE_TIMEOUT = 70;
 
 const DEFAULT_COLOR = "hsl(0,0,100%)";
 
@@ -22,7 +22,10 @@ const App = () => {
   const [currentIntervals, setCurrentIntervals] = useState<string[]>([]);
   const [currentNotes, setCurrentNotes] = useState<[MIDINote, number][]>([]);
   const [currentColor, setCurrentColor] = useState<string>(DEFAULT_COLOR);
-  const animatedColor = useSpring({ color: currentColor });
+  const animatedColorProps = useSpring({
+    color: currentColor,
+    config: { tension: 170, friction: 26 },
+  });
   useEffect(() => {
     const decayInterval = setInterval(() => {
       const midiSet = new Set(activeMIDI.map((note) => note.note));
@@ -67,21 +70,25 @@ const App = () => {
   useEffect(() => {
     setCurrentColor(intervalsToColor(currentBass, currentIntervals));
   }, [currentBass, currentIntervals]);
-
   return (
-    <Canvas camera={{ position: [SCENE_SCALE, 0, 0] }}>
-      <animated.ambientLight intensity={2} color={animatedColor.color} />
+    <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
+      <animated.ambientLight intensity={5} {...animatedColorProps} />
+      <animated.pointLight
+        position={[0, 0, 0]}
+        intensity={5000}
+        distance={SCENE_SCALE * 2}
+        castShadow
+        {...animatedColorProps}
+      />
       <LightOrb
         position={[0, 0, 0]}
-        color={animatedColor.color}
-        radius={SCENE_SCALE * 0.25}
+        radius={10}
+        animatedColorProps={animatedColorProps}
       />
-      <animated.pointLight
-        position={[SCENE_SCALE - 1, SCENE_SCALE - 1, SCENE_SCALE - 1]}
-        color={animatedColor.color}
+      <ContainerBox
+        scale={SCENE_SCALE}
+        animatedColorProps={animatedColorProps}
       />
-      <ContainerBox scale={SCENE_SCALE * 2} />
-      <OrbitControls />
     </Canvas>
   );
 };

@@ -1,16 +1,16 @@
+import React from "react";
 import { MeshPhongMaterial } from "three";
-import { animated, useSpring } from "@react-spring/three";
+import { animated, useSpring, SpringValue } from "@react-spring/three";
 
-const LightOrb = ({ position, color, radius }: any) => {
-  console.log(color);
+const LightOrb: React.FC<{
+  position: number[];
+  radius: number;
+  animatedColorProps: { color: SpringValue<string> };
+}> = ({ position, radius, animatedColorProps }: any) => {
   return (
-    <mesh position={position}>
+    <mesh position={position} castShadow receiveShadow>
       <sphereGeometry args={[radius, 128, 128]} />
-      <animated.meshLambertMaterial
-        emissive={color}
-        color={color}
-        reflectivity={50}
-      />
+      <meshStandardMaterial reflectivity={50} {...animatedColorProps} />
     </mesh>
   );
 };

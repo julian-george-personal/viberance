@@ -17,7 +17,7 @@ const PlaneBox: React.FC<{
   side?: Side;
   animatedColorProps: { color: SpringValue<string> };
 }> = ({ position, rotation, scale, side, animatedColorProps }) => {
-  // const texture = useLoader(EXRLoader, "/noon_grass_4k.exr"); // Specify the path to your HDR image
+  const texture = useLoader(EXRLoader, "/noon_grass_4k.exr"); // Specify the path to your HDR image
 
   return (
     <mesh position={position} rotation={rotation} receiveShadow>
@@ -25,10 +25,10 @@ const PlaneBox: React.FC<{
       <animated.meshPhysicalMaterial
         metalness={0.7}
         roughness={0.1}
-        envMapIntensity={20}
+        envMapIntensity={10}
         clearcoat={1}
         side={side}
-        // envMap={texture}
+        envMap={texture}
         color="white"
       />
     </mesh>

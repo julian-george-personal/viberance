@@ -8,9 +8,15 @@ const LightOrb: React.FC<{
   animatedColorProps: { color: SpringValue<string> };
 }> = ({ position, radius, animatedColorProps }: any) => {
   return (
-    <mesh position={position} castShadow receiveShadow>
+    <mesh position={position}>
       <sphereGeometry args={[radius, 128, 128]} />
-      <meshStandardMaterial reflectivity={50} {...animatedColorProps} />
+      <animated.meshStandardMaterial
+        emissive={animatedColorProps.color}
+        emissiveIntensity={0.5}
+        // transparent
+        // opacity={1}
+        color={animatedColorProps.color}
+      />
     </mesh>
   );
 };

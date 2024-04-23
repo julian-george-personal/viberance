@@ -26,9 +26,9 @@ const OCTAVE_DIMINISHING = 0.4;
 export const intervalsToColor = (
   currentBass: string | null,
   intervals: string[]
-): string => {
+): string | null => {
   const usedIntervals = new Set<string>();
-  if (!currentBass) return "white";
+  if (!currentBass) return null;
   let hue = keyHues[currentBass];
   let saturation = 30;
   let brightness = 60;

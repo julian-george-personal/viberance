@@ -21,7 +21,7 @@ export const getIntervalName = (intervalDistance: number): string => {
 };
 
 // determines how much color vectors are diminished upon repeated octaves
-const OCTAVE_DIMINISHING = 0.4;
+const OCTAVE_DIMINISHING = 0.6;
 
 export const intervalsToColor = (
   currentBass: string | null,

@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { useMIDINotes } from "@react-midi/hooks";
-import { Suspense, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, Suspense, useEffect, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import { MIDINote } from "@react-midi/hooks/dist/types";
 
@@ -18,8 +18,17 @@ const LIGHT_DECAY_PACE = 2;
 const DEFAULT_COLOR = "hsl(0, 0%, 0%)";
 const DEFAULT_INTENSITY = 10;
 
+const Handle: React.FC<{ load: (loading: boolean) => void }> = ({ load }) => {
+  useEffect(() => {
+    load(true);
+    return () => load(false);
+  }, []);
+  return <></>;
+};
+
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
+  const [isLoading, load] = useState(true);
   const [currentBass, setCurrentBass] = useState<string | null>(null);
   const [currentIntervals, setCurrentIntervals] = useState<string[]>([]);
   const [currentNotes, setCurrentNotes] = useState<[MIDINote, number][]>([]);
@@ -108,31 +117,53 @@ const App = () => {
   }, [currentBass, currentIntervals, setCurrentColor]);
 
   return (
-    <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
-      {/* <Suspense fallback={<Instructions />}> */}
-      <animated.ambientLight intensity={0.5} {...animatedColorProps} />
-      <animated.pointLight
-        position={[0, 0, 0]}
-        distance={SCENE_SCALE * 2}
-        // castShadow
-        {...animatedColorProps}
-        intensity={animatedIntensityProps.intensity}
-      />
-      <animated.pointLight
-        position={[SCENE_SCALE / 8, SCENE_SCALE / 8, SCENE_SCALE / 8]}
-        distance={SCENE_SCALE * 2}
-        // castShadow
-        {...animatedColorProps}
-        intensity={accentIntensityProps.intensity}
-      />
-      <LightOrb
-        position={[0, 0, 0]}
-        radius={SCENE_SCALE / 8}
-        animatedColorProps={animatedColorProps}
-      />
-      <ContainerBox scale={SCENE_SCALE} />
-      {/* </Suspense> */}
-    </Canvas>
+    <>
+      {isLoading && (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <h1>Loading...</h1>
+
+          <div style={{ textAlign: "left", width: 512 }}>
+            <h2>To Use:</h2>
+            <div>Plug in a MIDI Keyboard</div>
+            <div>Give your browser permissions</div>
+            <div>Open another app for your MIDI sound/instrument</div>
+            <div>Play!</div>
+          </div>
+        </div>
+      )}
+      <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
+        <Suspense fallback={<Handle load={load} />}>
+          <animated.ambientLight intensity={0.5} {...animatedColorProps} />
+          <animated.pointLight
+            position={[0, 0, 0]}
+            distance={SCENE_SCALE * 2}
+            // castShadow
+            {...animatedColorProps}
+            intensity={animatedIntensityProps.intensity}
+          />
+          <animated.pointLight
+            position={[SCENE_SCALE / 8, SCENE_SCALE / 8, SCENE_SCALE / 8]}
+            distance={SCENE_SCALE * 2}
+            // castShadow
+            {...animatedColorProps}
+            intensity={accentIntensityProps.intensity}
+          />
+          <LightOrb
+            position={[0, 0, 0]}
+            radius={SCENE_SCALE / 8}
+            animatedColorProps={animatedColorProps}
+          />
+          <ContainerBox scale={SCENE_SCALE} />
+        </Suspense>
+      </Canvas>
+    </>
   );
 };
 

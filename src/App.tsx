@@ -12,8 +12,8 @@ import { MIDINote } from "@react-midi/hooks/dist/types";
 
 const SCENE_SCALE = 150;
 // how long it takes for notes to go away in ms
-const MAX_NOTE_TIMEOUT = 100;
-const LIGHT_DECAY_PACE = 1;
+const MAX_NOTE_TIMEOUT = 400;
+const LIGHT_DECAY_PACE = 2;
 
 const DEFAULT_COLOR = "hsl(0, 0%, 0%)";
 const DEFAULT_INTENSITY = 10;
@@ -30,12 +30,17 @@ const App = () => {
     intensity: lightIntensity,
     config: { tension: 280, friction: 60 },
   });
+  const accentIntensityProps = useSpring({
+    intensity: lightIntensity * 1.5,
+    config: { tension: 280, friction: 60 },
+  });
   const animatedColorProps = useSpring({
     color: currentColor,
-    config:
-      currentColor != DEFAULT_COLOR
-        ? { tension: 120, friction: 14 }
-        : { tension: 500, friction: 60 },
+    config: {
+      tension: 120,
+      friction: 14,
+      duration: currentColor != DEFAULT_COLOR ? 100 : 1100,
+    },
   });
   useEffect(() => {
     if (currentNotes.length > 0) {
@@ -95,7 +100,6 @@ const App = () => {
   useEffect(() => {
     const newColor =
       intervalsToColor(currentBass, currentIntervals) || DEFAULT_COLOR;
-    console.log(newColor);
     setCurrentColor(newColor);
   }, [currentBass, currentIntervals, setCurrentColor]);
 
@@ -110,11 +114,11 @@ const App = () => {
         intensity={animatedIntensityProps.intensity}
       />
       <animated.pointLight
-        position={[SCENE_SCALE / 6.5, SCENE_SCALE / 6.5, SCENE_SCALE / 6.5]}
+        position={[SCENE_SCALE / 8, SCENE_SCALE / 8, SCENE_SCALE / 8]}
         distance={SCENE_SCALE * 2}
         // castShadow
         {...animatedColorProps}
-        intensity={animatedIntensityProps.intensity}
+        intensity={accentIntensityProps.intensity}
       />
       <LightOrb
         position={[0, 0, 0]}

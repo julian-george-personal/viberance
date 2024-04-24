@@ -3,7 +3,6 @@ import { useMIDINotes } from "@react-midi/hooks";
 import { Suspense, useEffect, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import { MIDINote } from "@react-midi/hooks/dist/types";
-import { Html } from "@react-three/drei";
 
 import LightOrb from "./meshes/LightOrb";
 import { getIntervalName, intervalsToColor, midiToNote } from "./utils";
@@ -18,27 +17,6 @@ const LIGHT_DECAY_PACE = 2;
 
 const DEFAULT_COLOR = "hsl(0, 0%, 0%)";
 const DEFAULT_INTENSITY = 10;
-
-const Instructions = () => (
-  <Html center>
-    <div style={{ width: 512 }}>
-      <div>
-        <h1>How to use</h1>
-      </div>
-      <ul>
-        <li>
-          <div>Plug in a MIDI keyboard</div>
-        </li>
-        <li>
-          <div>Give your browser permissions</div>
-        </li>
-        <li>
-          <div>Play!</div>
-        </li>
-      </ul>
-    </div>
-  </Html>
-);
 
 const App = () => {
   const activeMIDI = useMIDINotes({ channel: 1 });
@@ -131,29 +109,29 @@ const App = () => {
 
   return (
     <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
-      <Suspense fallback={<Instructions />}>
-        <animated.ambientLight intensity={0.5} {...animatedColorProps} />
-        <animated.pointLight
-          position={[0, 0, 0]}
-          distance={SCENE_SCALE * 2}
-          // castShadow
-          {...animatedColorProps}
-          intensity={animatedIntensityProps.intensity}
-        />
-        <animated.pointLight
-          position={[SCENE_SCALE / 8, SCENE_SCALE / 8, SCENE_SCALE / 8]}
-          distance={SCENE_SCALE * 2}
-          // castShadow
-          {...animatedColorProps}
-          intensity={accentIntensityProps.intensity}
-        />
-        <LightOrb
-          position={[0, 0, 0]}
-          radius={SCENE_SCALE / 8}
-          animatedColorProps={animatedColorProps}
-        />
-        <ContainerBox scale={SCENE_SCALE} />
-      </Suspense>
+      {/* <Suspense fallback={<Instructions />}> */}
+      <animated.ambientLight intensity={0.5} {...animatedColorProps} />
+      <animated.pointLight
+        position={[0, 0, 0]}
+        distance={SCENE_SCALE * 2}
+        // castShadow
+        {...animatedColorProps}
+        intensity={animatedIntensityProps.intensity}
+      />
+      <animated.pointLight
+        position={[SCENE_SCALE / 8, SCENE_SCALE / 8, SCENE_SCALE / 8]}
+        distance={SCENE_SCALE * 2}
+        // castShadow
+        {...animatedColorProps}
+        intensity={accentIntensityProps.intensity}
+      />
+      <LightOrb
+        position={[0, 0, 0]}
+        radius={SCENE_SCALE / 8}
+        animatedColorProps={animatedColorProps}
+      />
+      <ContainerBox scale={SCENE_SCALE} />
+      {/* </Suspense> */}
     </Canvas>
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
-import { MeshPhongMaterial } from "three";
-import { animated, useSpring, SpringValue } from "@react-spring/three";
+import { animated, SpringValue } from "@react-spring/three";
 
 const LightOrb: React.FC<{
   position: number[];

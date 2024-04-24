@@ -15,8 +15,7 @@ const PlaneBox: React.FC<{
   rotation: Euler;
   scale: number;
   side?: Side;
-  animatedColorProps: { color: SpringValue<string> };
-}> = ({ position, rotation, scale, side, animatedColorProps }) => {
+}> = ({ position, rotation, scale, side }) => {
   const texture = useLoader(EXRLoader, "/noon_grass_4k.exr"); // Specify the path to your HDR image
 
   return (
@@ -37,8 +36,7 @@ const PlaneBox: React.FC<{
 
 const ContainerBox: React.FC<{
   scale: number;
-  animatedColorProps: { color: SpringValue<string> };
-}> = ({ scale, animatedColorProps }) => {
+}> = ({ scale }) => {
   return (
     <>
       {/* Top */}
@@ -47,7 +45,6 @@ const ContainerBox: React.FC<{
         rotation={[-Math.PI / 2, 0, 0]}
         scale={scale}
         side={1}
-        animatedColorProps={animatedColorProps}
       />
       {/* Bottom */}
       <PlaneBox
@@ -55,21 +52,18 @@ const ContainerBox: React.FC<{
         rotation={[Math.PI / 2, 0, 0]}
         scale={scale}
         side={1}
-        animatedColorProps={animatedColorProps}
       />
       {/* Left */}
       <PlaneBox
         position={[-scale / 2, 0, 0]}
         rotation={[0, Math.PI / 2, 0]}
         scale={scale}
-        animatedColorProps={animatedColorProps}
       />
       {/* Right */}
       <PlaneBox
         position={[scale / 2, 0, 0]}
         rotation={[0, -Math.PI / 2, 0]}
         scale={scale}
-        animatedColorProps={animatedColorProps}
       />
       {/* Front */}
       <PlaneBox
@@ -77,7 +71,6 @@ const ContainerBox: React.FC<{
         rotation={[0, 0, 0]}
         scale={scale}
         side={1}
-        animatedColorProps={animatedColorProps}
       />
       {/* Back */}
       <PlaneBox
@@ -85,7 +78,6 @@ const ContainerBox: React.FC<{
         rotation={[0, Math.PI, 0]}
         scale={scale}
         side={1}
-        animatedColorProps={animatedColorProps}
       />
     </>
   );

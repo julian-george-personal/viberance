@@ -71,13 +71,13 @@ export const intervalToColorVector: {
   // halfway to fifth down
   "4": [345, 1, 1.1],
   m5: [0, 0.7, 0.7],
-  M5: [0, 1.05, 1.125],
+  M5: [0, 1.05, 1.1],
   // halfway to the major key of the m6 tone
   m6: [300, 0.9, 0.9],
-  M6: [0, 1.25, 1.1],
+  M6: [0, 1.25, 1.05],
   m7: [345, 1.1, 1],
   M7: [0, 1.4, 1.05],
-  o: [0, 1, 1.15],
+  o: [0, 1, 1.075],
   // halfway to the major key of the m9 tone
   m9: [105, 0.8, 0.8],
   M9: [0, 1.3, 1.025],

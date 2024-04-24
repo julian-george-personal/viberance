@@ -1,6 +1,6 @@
 ## Viberance
 
-#### Julian George
+### by Julian George
 
 Welcome to my midterm project for Dartmouth's MUS 16.01! It's simple: viberance converts chords to colors. Built with `react-three-fiber`, this 3D visualization is built to be simple and vibrant. The generated colors begin with the bass note, with each tone getting its own hue. Then, as you add more intervals onto the bass note, the color hue, saturation, and brightness of the color change. Intervals within the same major key as the bass will generally increase brightness and saturation, whereas intervals to non-diatonic tones will often bring the hue towards the key that the interval suggests.
 

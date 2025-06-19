@@ -85,13 +85,11 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
     }
   }).toDestination());
 
-  // Initialize audio on mount
   useEffect(() => {
     Tone.start();
     setIsAudioReady(true);
   }, []);
 
-  // Handle audio playback
   useEffect(() => {
     if (!isAudioReady) return;
     // Start new notes

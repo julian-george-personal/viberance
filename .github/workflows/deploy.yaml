@@ -2,7 +2,7 @@ name: S3 CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
 env:
   AWS_REGION: "us-east-1"
   SITE_NAME: "viberance"

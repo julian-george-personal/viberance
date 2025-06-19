@@ -1,3 +1,4 @@
+import { MIDINote } from "@react-midi/hooks/dist/types";
 import {
   noteBases,
   intervalDistances,
@@ -49,3 +50,21 @@ export const intervalsToColor = (
   }
   return `hsl(${hue}, ${Math.round(saturation)}%, ${Math.round(brightness)}%)`;
 };
+
+const midiNoteFromNum =  (noteNum:number):MIDINote => {
+  return {
+    note: noteNum,
+    velocity: 255,
+    channel: -1,
+    on: true
+  }
+}
+
+// From 48 (C2) to 66 (F#3)
+const keyToMidiScale = ["a","w","s","e","d","f","t","g","y","h","u","j","k","o","l","p",";","'","]"]
+
+export const pressedKeyToMidiNote = (pressedKey:string):MIDINote | null=>{
+  const noteIndex = keyToMidiScale.indexOf(pressedKey)
+  if (noteIndex == -1) return null;
+  return midiNoteFromNum(noteIndex+48);
+}

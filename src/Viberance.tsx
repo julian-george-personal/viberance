@@ -60,18 +60,14 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
   }, [setMidiKeyboardNotes])
 
   useEffect(() => {
-    if (!withMidiDevice) {
-      document.addEventListener("keydown", onKeyDown)
-      return () => document.removeEventListener("keydown", onKeyDown);
-    }
-  }, [onKeyDown, withMidiDevice])
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onKeyDown])
 
   useEffect(() => {
-    if (!withMidiDevice) {
-      document.addEventListener("keyup", onKeyUp)
-      return () => document.removeEventListener("keyup", onKeyUp);
-    }
-  }, [onKeyUp, withMidiDevice])
+    document.addEventListener("keyup", onKeyUp)
+    return () => document.removeEventListener("keyup", onKeyUp);
+  }, [onKeyUp])
 
   const [synth] = useState(() => new Tone.PolySynth(Tone.Synth, {
     oscillator: {
@@ -206,7 +202,7 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
   return (
     <>
       {isLoading && <LoadingScreen>
-        <div>{withMidiDevice ? "Your MIDI device is connected." : "No MIDI device detected, using computer keyboard..."}</div>
+        <div>{withMidiDevice ? "" : "Unable to access MIDI devices."}</div>
       </LoadingScreen>}
       {isAudioReady && <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
         <Suspense fallback={<Handle load={load} />}>

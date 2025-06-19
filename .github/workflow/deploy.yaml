@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: S3 CI
 
 on:
   push:
@@ -10,7 +10,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - name: Configure AWS credentials

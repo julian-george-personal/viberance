@@ -1,14 +1,12 @@
 import React from "react";
 import {
-  Canvas,
-  useFrame,
   Euler,
   Vector3,
   useLoader,
 } from "@react-three/fiber";
-import { MeshStandardMaterial, Side, MeshPhysicalMaterial } from "three";
+import { Side } from "three";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader";
-import { SpringValue, animated } from "@react-spring/three";
+import { animated } from "@react-spring/three";
 
 const PlaneBox: React.FC<{
   position: Vector3;

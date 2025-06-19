@@ -65,6 +65,6 @@ const keyToMidiScale = ["a","w","s","e","d","f","t","g","y","h","u","j","k","o",
 
 export const pressedKeyToMidiNote = (pressedKey:string):MIDINote | null=>{
   const noteIndex = keyToMidiScale.indexOf(pressedKey)
-  if (noteIndex == -1) return null;
+  if (noteIndex === -1) return null;
   return midiNoteFromNum(noteIndex+48);
 }

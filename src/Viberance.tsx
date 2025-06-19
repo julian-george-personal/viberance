@@ -22,7 +22,7 @@ const Handle: React.FC<{ load: (loading: boolean) => void }> = ({ load }) => {
   useEffect(() => {
     load(true);
     return () => load(false);
-  }, []);
+  }, [load]);
   return <></>;
 };
 
@@ -64,14 +64,14 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
       document.addEventListener("keydown", onKeyDown)
       return () => document.removeEventListener("keydown", onKeyDown);
     }
-  }, [onKeyDown])
+  }, [onKeyDown, withMidiDevice])
 
   useEffect(() => {
     if (!withMidiDevice) {
       document.addEventListener("keyup", onKeyUp)
       return () => document.removeEventListener("keyup", onKeyUp);
     }
-  }, [onKeyUp])
+  }, [onKeyUp, withMidiDevice])
 
   const [synth] = useState(() => new Tone.PolySynth(Tone.Synth, {
     oscillator: {
@@ -134,7 +134,7 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
     config: {
       tension: 120,
       friction: 14,
-      duration: currentColor != DEFAULT_COLOR ? 100 : 1100,
+      duration: currentColor !== DEFAULT_COLOR ? 100 : 1100,
     },
   });
   // Handles continual decay of light intensity
@@ -161,7 +161,7 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
       const currTime = new Date().getTime();
       for (const [note, timestamp] of currentNotes) {
         if (!midiSet.has(note.note)) {
-          if (timestamp == 0) {
+          if (timestamp === 0) {
             newCurrentNotes.push([note, currTime]);
             setLightIntensity((prev) => prev + note.velocity);
           } else if (
@@ -183,7 +183,7 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
     let currentBass = null;
     for (let i = 0; i < activeNotes.length; i++) {
       const activeNote = activeNotes[i];
-      if (i == 0) currentBass = activeNote;
+      if (i === 0) currentBass = activeNote;
       else {
         //If it gets to this point there will always be a currentBass
         //@ts-expect-error

@@ -45,6 +45,7 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
     useState<number>(DEFAULT_INTENSITY);
 
   const onKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.repeat) return;
     const newMidiNote = pressedKeyToMidiNote(event.key);
     if (newMidiNote) setMidiKeyboardNotes((prev) => new Set([...Array.from(prev), newMidiNote]))
   }, [setMidiKeyboardNotes])
@@ -59,6 +60,10 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
     }
   }, [setMidiKeyboardNotes])
 
+  const onWindowBlur = useCallback(() => {
+    setMidiKeyboardNotes(new Set());
+  }, [setMidiKeyboardNotes])
+
   useEffect(() => {
     document.addEventListener("keydown", onKeyDown)
     return () => document.removeEventListener("keydown", onKeyDown);
@@ -68,6 +73,11 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
     document.addEventListener("keyup", onKeyUp)
     return () => document.removeEventListener("keyup", onKeyUp);
   }, [onKeyUp])
+
+  useEffect(() => {
+    window.addEventListener("blur", onWindowBlur)
+    return () => window.removeEventListener("blur", onWindowBlur);
+  }, [onWindowBlur])
 
   const [synth] = useState(() => new Tone.PolySynth(Tone.Synth, {
     oscillator: {

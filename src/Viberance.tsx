@@ -138,9 +138,9 @@ const Viberance = ({ withMidiDevice }: IAppProps) => {
   const animatedColorProps = useSpring({
     color: currentColor,
     config: {
-      tension: 120,
-      friction: 14,
-      duration: currentColor !== DEFAULT_COLOR ? 100 : 1100,
+      tension: 280,
+      friction: 20,
+      duration: 20,
     },
   });
   // Handles continual decay of light intensity
